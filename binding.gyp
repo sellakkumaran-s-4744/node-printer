@@ -22,6 +22,11 @@
         # sources
         '<!@(["python", "tools/getSourceFiles.py", "src", "cc"])'
       ],
+      'msvs_settings': {
+        'VCCLCompilerTool': {
+          "ExceptionHandling": 1, 'AdditionalOptions': [ '-std:c++17' ]
+        }
+      },
       'conditions': [
         # common exclusions
         ['OS!="linux"', {'sources/': [['exclude', '_linux\\.cc$']]}],
