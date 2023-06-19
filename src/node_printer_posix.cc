@@ -160,7 +160,11 @@ namespace
                 );
 
 		if(std::strcmp(choice->choice, "Custom") == 0) {
-                    ppd_coption_t *customValue = ppdFindCustomOption(ppd, choice->option->keyword);
+                    char *keyword = choice->option->keyword;
+                    if(strcmp(option->text, "PageRegion") == 0) {
+                        keyword = "PageSize";
+                    }
+                    ppd_coption_t *customValue = ppdFindCustomOption(ppd, keyword);
 
                     if (customValue != NULL) {
                         ppd_cparam_t *cparam = ppdFirstCustomParam(customValue);
