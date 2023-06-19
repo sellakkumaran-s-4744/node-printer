@@ -158,6 +158,44 @@ namespace
                     V8_STRING_NEW_UTF8("marked"),
                     V8_VALUE_NEW_V_0_11_10(Boolean, static_cast<bool>(choice->marked))
                 );
+
+		if(std::strcmp(choice->choice, "Custom") == 0) {
+                    ppd_coption_t *customValue = ppdFindCustomOption(ppd, choice->option->keyword);
+
+                    if (customValue != NULL) {
+                        ppd_cparam_t *cparam = ppdFirstCustomParam(customValue);
+                        char *typeStr;
+                        switch (cparam->type) {
+                            case PPD_CUSTOM_POINTS:
+                                typeStr = "POINTS";
+                                break;
+                            case PPD_CUSTOM_INT:
+                                typeStr = "INT";
+                                break;
+                            case PPD_CUSTOM_STRING:
+                                typeStr = "STRING";
+                                break;
+                            case PPD_CUSTOM_PASSCODE:
+                                typeStr = "PASSCODE";
+                                break;
+                            case PPD_CUSTOM_PASSWORD:
+                                typeStr = "PASSWORD";
+                                break;
+                            case PPD_CUSTOM_REAL:
+                                typeStr = "REAL";
+                                break;
+                            default:
+                                typeStr = "UNKNOWN";
+                                break;
+                        }
+                        ppd_opt->Set(
+                            MY_NODE_MODULE_CONTEXT_PRE
+                            V8_STRING_NEW_UTF8("customType"),
+                            V8_STRING_NEW_UTF8(typeStr)
+                        );
+                    }
+                }
+
                 ppd_suboptions->Set(
                     MY_NODE_MODULE_CONTEXT_PRE
                     V8_STRING_NEW_UTF8(choice->choice), 
