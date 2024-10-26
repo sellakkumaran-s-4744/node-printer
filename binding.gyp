@@ -1,7 +1,8 @@
 {
-  'variables': {
-    'module_name%': 'node_printer',
-    'module_path%': './lib/'
+  "variables": {
+    "module_name%": "node_printer",
+    "module_path%": "lib",
+    "openssl_fips": ""
   },
   'targets': [
     {
@@ -22,11 +23,10 @@
         # sources
         '<!@(["python", "tools/getSourceFiles.py", "src", "cc"])'
       ],
-      'msvs_settings': {
-        'VCCLCompilerTool': {
-          "ExceptionHandling": 1, 'AdditionalOptions': [ '-std:c++17' ]
-        }
-      },
+      'cflags_cc+': [
+        "-Wno-deprecated-declarations",
+        "-Wunused-result"
+      ],
       'conditions': [
         # common exclusions
         ['OS!="linux"', {'sources/': [['exclude', '_linux\\.cc$']]}],
@@ -39,6 +39,7 @@
         # specific settings
         ['OS!="win"', {
           'cflags':[
+            '-Wdeprecated-declarations',
             '<!(cups-config --cflags)'
           ],
           'ldflags':[
@@ -50,11 +51,35 @@
             #'-lcups -lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err -lz -lpthread -lm -lcrypt -lz'
           ],
           'link_settings': {
-              'libraries': [
-                  '<!(cups-config --libs)'
-              ]
-           }
-        }]
+            'libraries': [
+              '<!(cups-config --libs)'
+            ]
+          }
+        }],
+        ['OS=="win"', {
+          "defines": [
+            "NOMINMAX" # allow std::min/max to work
+          ],
+          "cflags": [
+            "-O2"
+          ],
+          "msvs_settings": {
+            "VCCLCompilerTool": {
+              "AdditionalOptions": [ "-std:c++20", ],
+            },
+          },
+        }],
+        ['OS=="mac"', {
+          'cflags':[
+            "-Wdeprecated-declarations",
+            "-stdlib=libc++"
+          ]
+        }],
+        ['OS=="linux"', {
+          'cflags_cc':[
+            "-std=c++20"
+          ]
+        }],
       ]
     }
   ]

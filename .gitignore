@@ -10,3 +10,5 @@ node_modules/*
 /.vscode/c_cpp_properties.json
 /.idea/
 /nbproject/
+/package-lock.json
+/.vscode/settings.json

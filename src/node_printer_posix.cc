@@ -168,7 +168,7 @@ namespace
 
                     if (customValue != NULL) {
                         ppd_cparam_t *cparam = ppdFirstCustomParam(customValue);
-                        char *typeStr;
+                        std::string typeStr;
                         switch (cparam->type) {
                             case PPD_CUSTOM_POINTS:
                                 typeStr = "POINTS";
@@ -195,7 +195,7 @@ namespace
                         ppd_opt->Set(
                             MY_NODE_MODULE_CONTEXT_PRE
                             V8_STRING_NEW_UTF8("customType"),
-                            V8_STRING_NEW_UTF8(typeStr)
+                            V8_STRING_NEW_UTF8(typeStr.c_str())
                         );
                     }
                 }
@@ -224,8 +224,8 @@ namespace
                 V8_STRING_NEW_UTF8(group->name)
             );
 
-            ppd_options->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8(option->keyword), ppd_suboptions_obj);
-            group_opts->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8(option->keyword), ppd_suboptions_obj);
+            (void)ppd_options->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8(option->keyword), ppd_suboptions_obj);
+            (void)group_opts->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8(option->keyword), ppd_suboptions_obj);
         }
         
         for (i = group->num_subgroups, subgroup = group->subgroups; i > 0; --i, ++subgroup) {
@@ -244,9 +244,9 @@ namespace
 
         std::ostringstream error_str; // error string
 
-        if ((filename = cupsGetPPD(printer->name)) != NULL)
+        if ((filename = (char *)cupsGetPPD(printer->name)) != NULL)
         {
-            if ((ppd = ppdOpenFile(filename)) != NULL)
+            if ((ppd = (ppd_file_t *)ppdOpenFile(filename)) != NULL)
             {
                  ppdMarkDefaults(ppd);
                  cupsMarkOptions(ppd, printer->num_options, printer->options);
@@ -278,21 +278,21 @@ namespace
     std::string parsePrinterInfo(const cups_dest_t * printer, v8::Local<v8::Object> result_printer)
     {
         MY_NODE_MODULE_ISOLATE_DECL
-        result_printer->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8("name"), V8_STRING_NEW_UTF8(printer->name));
-        result_printer->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8("isDefault"), V8_VALUE_NEW_V_0_11_10(Boolean, static_cast<bool>(printer->is_default)));
+        (void)result_printer->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8("name"), V8_STRING_NEW_UTF8(printer->name));
+        (void)result_printer->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8("isDefault"), V8_VALUE_NEW_V_0_11_10(Boolean, static_cast<bool>(printer->is_default)));
 
         if(printer->instance)
         {
-            result_printer->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8("instance"), V8_STRING_NEW_UTF8(printer->instance));
+            (void)result_printer->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8("instance"), V8_STRING_NEW_UTF8(printer->instance));
         }
 
         v8::Local<v8::Object> result_printer_options = V8_VALUE_NEW_DEFAULT_V_0_11_10(Object);
         cups_option_t *dest_option = printer->options;
         for(int j = 0; j < printer->num_options; ++j, ++dest_option)
         {
-            result_printer_options->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8(dest_option->name), V8_STRING_NEW_UTF8(dest_option->value));
+            (void)result_printer_options->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8(dest_option->name), V8_STRING_NEW_UTF8(dest_option->value));
         }
-        result_printer->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8("options"), result_printer_options);
+        (void)result_printer->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8("options"), result_printer_options);
         // Get printer jobs
         cups_job_t * jobs;
         int totalJobs = cupsGetJobs(&jobs, printer->name, 0 /*0 means all users*/, CUPS_WHICHJOBS_ACTIVE);
@@ -311,9 +311,9 @@ namespace
                     // got an error? break then.
                     break;
                 }
-                result_priner_jobs->Set(MY_NODE_MODULE_CONTEXT_PRE jobi, result_printer_job);
+                (void)result_priner_jobs->Set(MY_NODE_MODULE_CONTEXT_PRE jobi, result_printer_job);
             }
-            result_printer->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8("jobs"), result_priner_jobs);
+            (void)result_printer->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8("jobs"), result_priner_jobs);
         }
         cupsFreeJobs(totalJobs, jobs);
         return error_str;
@@ -374,7 +374,7 @@ MY_NODE_MODULE_CALLBACK(getPrinters)
             // got an error? break then
             break;
         }
-        result->Set(MY_NODE_MODULE_CONTEXT_PRE i, result_printer);
+        (void)result->Set(MY_NODE_MODULE_CONTEXT_PRE i, result_printer);
     }
     cupsFreeDests(printers_size, printers);
     if(!error_str.empty())
@@ -434,8 +434,8 @@ MY_NODE_MODULE_CALLBACK(getPrinterDriverOptions)
     int printers_size = cupsGetDests(&printers);
     printer = cupsGetDest(*printername, NULL, printers_size, printers);
     v8::Local<v8::Object> driver_options = V8_VALUE_NEW_DEFAULT_V_0_11_10(Object);
-    driver_options->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8("options"), V8_VALUE_NEW_DEFAULT_V_0_11_10(Object));
-    driver_options->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8("groups"), V8_VALUE_NEW_DEFAULT_V_0_11_10(Object));
+    (void)driver_options->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8("options"), V8_VALUE_NEW_DEFAULT_V_0_11_10(Object));
+    (void)driver_options->Set(MY_NODE_MODULE_CONTEXT_PRE V8_STRING_NEW_UTF8("groups"), V8_VALUE_NEW_DEFAULT_V_0_11_10(Object));
     if(printer != NULL)
     {
         parseDriverOptions(printer, driver_options);
@@ -514,7 +514,7 @@ MY_NODE_MODULE_CALLBACK(getSupportedJobCommands)
     MY_NODE_MODULE_HANDLESCOPE;
     v8::Local<v8::Array> result = V8_VALUE_NEW_DEFAULT_V_0_11_10(Array);
     int i = 0;
-    result->Set(MY_NODE_MODULE_CONTEXT_PRE i++, V8_STRING_NEW_UTF8("CANCEL"));
+    (void)result->Set(MY_NODE_MODULE_CONTEXT_PRE i++, V8_STRING_NEW_UTF8("CANCEL"));
     MY_NODE_MODULE_RETURN_VALUE(result);
 }
 
@@ -525,7 +525,7 @@ MY_NODE_MODULE_CALLBACK(getSupportedPrintFormats)
     int i = 0;
     for(FormatMapType::const_iterator itFormat = getPrinterFormatMap().begin(); itFormat != getPrinterFormatMap().end(); ++itFormat)
     {
-        result->Set(MY_NODE_MODULE_CONTEXT_PRE i++, V8_STRING_NEW_UTF8(itFormat->first.c_str()));
+        (void)result->Set(MY_NODE_MODULE_CONTEXT_PRE i++, V8_STRING_NEW_UTF8(itFormat->first.c_str()));
     }
     MY_NODE_MODULE_RETURN_VALUE(result);
 }
