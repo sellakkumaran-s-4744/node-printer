@@ -65,7 +65,7 @@
           ],
           "msvs_settings": {
             "VCCLCompilerTool": {
-              "AdditionalOptions": [ "-std:c++20", ],
+              "AdditionalOptions": [ "/std:c++20", ],
             },
           },
         }],
