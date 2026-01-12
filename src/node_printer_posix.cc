@@ -4,6 +4,7 @@
 #include <map>
 #include <utility>
 #include <sstream>
+#include <cstring>
 #include <node_version.h>
 
 #include <cups/cups.h>

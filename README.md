@@ -1,6 +1,6 @@
 node-printer
 ============
-Native bind printers on POSIX and Windows OS from Node.js, iojs and node-webkit.
+Native printer bindings for POSIX and Windows from Node.js, Electron, and NW.js (node-webkit).
 <table>
   <thead>
     <tr>
@@ -35,8 +35,7 @@ I was involved in a project where I need to print from Node.JS. This is the reas
 
 * no dependecies;
 * native method wrappers from Windows  and POSIX (which uses [CUPS 1.4/MAC OS X 10.6](http://cups.org/)) APIs;
-* compatible with node v0.8.x, 0.9.x and v0.11.x (with 0.11.9 and 0.11.13);
-* compatible with node-webkit v0.8.x and 0.9.2;
+* Supports Node.js 22+ and Electron 30+; NW.js (node-webkit) via `nw-gyp` rebuild.
 * `getPrinters()` to enumerate all installed printers with current jobs and statuses;
 * `getPrinter(printerName)` to get a specific/default printer info with current jobs and statuses;
 * `getPrinterDriverOptions(printerName)` ([POSIX](http://en.wikipedia.org/wiki/POSIX) only) to get a specific/default printer driver options such as supported paper size and other info
@@ -62,10 +61,10 @@ npm install printer --target_arch=x64
 ```
 
 #### Prebuilt electron builds
-Say you are installing 1.4.5 electron. Please check the [Releases](https://github.com/tojocky/node-printer/releases) for supported Electron versions
+For Electron ≥30, use your exact Electron version in the `--target` option.
 ```
-npm install printer --runtime=electron --target=1.4.5 --target_arch=x64
-npm install printer --runtime=electron --target=1.4.5 --target_arch=ia32
+npm install printer --runtime=electron --target=30.0.0 --target_arch=x64
+npm install printer --runtime=electron --target=30.0.0 --target_arch=ia32
 ```
 
 #### For building after install
@@ -85,7 +84,7 @@ nw-gyp rebuild
 ```
 For specific distribution `--dist-url` node-gyp parameter should be used. Example for electron:
 ```
-node-gyp rebuild --target=0.37.4 --arch=x64 --dist-url=https://atom.io/download/atom-shell
+node-gyp rebuild --target=30.0.0 --arch=x64 --dist-url=https://electronjs.org/headers
 ```
 
 Ubuntu User :
