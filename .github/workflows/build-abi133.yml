@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*-node22-abi133'
+      - 'v*-node24-abi133'
 
 jobs:
   build:
@@ -27,24 +28,28 @@ jobs:
             abi-tag: 'node22-abi133'
             os: windows-latest
             arch: x64
+          # Node 24 - ABI 133
+          - node-version: '24.x'
+            abi-tag: 'node24-abi133'
+            os: ubuntu-latest
+            arch: x64
+          - node-version: '24.x'
+            abi-tag: 'node24-abi133'
+            os: macos-latest
+            arch: x64
+          - node-version: '24.x'
+            abi-tag: 'node24-abi133'
+            os: macos-latest
+            arch: arm64
+          - node-version: '24.x'
+            abi-tag: 'node24-abi133'
+            os: windows-latest
+            arch: x64
 
     runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install CUPS (Ubuntu)
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y libcups2-dev
-
-      - name: Install CUPS (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          # CUPS is pre-installed on macOS, but ensure development headers are available
-          if ! command -v cups-config &> /dev/null; then
-            echo "cups-config not found, attempting to install..."
-            brew install cups
-          fi
 
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -84,6 +89,7 @@ jobs:
       matrix:
         abi-tag:
           - 'node22-abi133'
+          - 'node24-abi133'
 
     steps:
       - uses: actions/checkout@v4
