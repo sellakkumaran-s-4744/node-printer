@@ -56,7 +56,7 @@ from [npmjs.org](https://www.npmjs.org/package/printer)
 
 #### Binary Distribution & ABI Versioning
 
-This package supports prebuilt binaries for Node.js 22 and 24 using ABI 133. Prebuilt binaries are available for the following platforms:
+This package supports prebuilt binaries for Node.js 22 using ABI 133. Prebuilt binaries are available for the following platforms:
 
 - **Linux x64**: `node_printer_linux_x64_abi133.node`
 - **macOS x64**: `node_printer_darwin_x64_abi133.node`
@@ -69,11 +69,9 @@ The module automatically tries to load the appropriate prebuilt binary for your 
 
 **Supported Node.js versions:**
 - Node.js 22.x (ABI 133)
-- Node.js 24.x (ABI 133)
 
 Prebuilt binaries are distributed through [GitHub Releases](https://github.com/tojocky/node-printer/releases) and tagged as:
 - `v<version>-node22-abi133` - for Node.js 22.x
-- `v<version>-node24-abi133` - for Node.js 24.x
 
 #### Prebuilt node builds
 ```
