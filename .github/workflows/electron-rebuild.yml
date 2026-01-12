@@ -21,9 +21,9 @@ jobs:
         include:
           - os: ubuntu-latest
             arch: x64
-          - os: macos-13
+          - os: macos-15-intel
             arch: x64
-          - os: macos-14
+          - os: macos-15
             arch: arm64
           - os: windows-latest
             arch: x64
@@ -41,7 +41,6 @@ jobs:
         with:
           node-version: 22
           check-latest: true
-          cache: npm
 
       - name: Install CUPS dependencies (Linux)
         if: runner.os == 'Linux'
