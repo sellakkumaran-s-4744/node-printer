@@ -16,6 +16,7 @@
     "url": "git://github.com/tojocky/node-printer.git"
   },
   "dependencies": {
+    "node-abi": "4.24.0",
     "node-gyp": "^11.0.0"
   },
   "devDependencies": {
@@ -28,7 +29,8 @@
     "node": ">= 22.0.0"
   },
   "scripts": {
-    "install": "node-gyp rebuild",
+    "install": "node node-abi-setup.js && node-gyp rebuild",
+    "postinstall": "node node-abi-setup.js",
     "test": "nodeunit test"
   },
   "binary": {
