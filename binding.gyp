@@ -9,10 +9,12 @@
       "target_name": "action_after_build",
       "type": "none",
       "dependencies": [ "<(module_name)" ],
-      "copies": [
+      "actions": [
         {
-          "files": [ "<(PRODUCT_DIR)/<(module_name).node" ],
-          "destination": "<(module_path)"
+          "action_name": "copy_binary_with_abi_version",
+          "inputs": [ "<(PRODUCT_DIR)/<(module_name).node" ],
+          "outputs": [ "<(module_path)/<(module_name)_<(node_module_version).node" ],
+          "action": [ "python", "tools/copyWithABI.py", "<(PRODUCT_DIR)/<(module_name).node", "<(module_path)", "<(node_module_version)" ]
         }
       ]
     },

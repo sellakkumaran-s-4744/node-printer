@@ -28,7 +28,8 @@
     "node": ">= 22.0.0"
   },
   "scripts": {
-    "install": "node-gyp rebuild",
+    "build": "node-gyp rebuild",
+    "install": "node-gyp rebuild 2>/dev/null || true",
     "test": "nodeunit test"
   },
   "binary": {

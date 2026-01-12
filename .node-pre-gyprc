@@ -1,0 +1,5 @@
+{
+  "build_from_source": false,
+  "force": false,
+  "fallback_to_build": true
+}

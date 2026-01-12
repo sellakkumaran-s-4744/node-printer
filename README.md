@@ -54,6 +54,27 @@ Make sure you have Python 2.x installed on your system. Windows users will also 
 
 from [npmjs.org](https://www.npmjs.org/package/printer)
 
+#### Binary Distribution & ABI Versioning
+
+This package supports prebuilt binaries for Node.js 22 and 24 using ABI 133. Prebuilt binaries are available for the following platforms:
+
+- **Linux x64**: `node_printer_linux_x64_abi133.node`
+- **macOS x64**: `node_printer_darwin_x64_abi133.node`
+- **macOS arm64**: `node_printer_darwin_arm64_abi133.node`
+- **Windows x64**: `node_printer_win32_x64_abi133.node`
+
+**Installation with prebuilt binaries:**
+
+The module automatically tries to load the appropriate prebuilt binary for your Node.js version and platform. If a prebuilt binary is not available, it will fall back to building from source.
+
+**Supported Node.js versions:**
+- Node.js 22.x (ABI 133)
+- Node.js 24.x (ABI 133)
+
+Prebuilt binaries are distributed through [GitHub Releases](https://github.com/tojocky/node-printer/releases) and tagged as:
+- `v<version>-node22-abi133` - for Node.js 22.x
+- `v<version>-node24-abi133` - for Node.js 24.x
+
 #### Prebuilt node builds
 ```
 npm install printer --target_arch=ia32

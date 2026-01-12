@@ -1,0 +1,116 @@
+name: Build ABI 133 Binaries
+
+on:
+  push:
+    tags:
+      - 'v*-node22-abi133'
+      - 'v*-node24-abi133'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          # Node 22 - ABI 133
+          - node-version: '22.x'
+            abi-tag: 'node22-abi133'
+            os: ubuntu-latest
+            arch: x64
+          - node-version: '22.x'
+            abi-tag: 'node22-abi133'
+            os: macos-latest
+            arch: x64
+          - node-version: '22.x'
+            abi-tag: 'node22-abi133'
+            os: macos-latest
+            arch: arm64
+          - node-version: '22.x'
+            abi-tag: 'node22-abi133'
+            os: windows-latest
+            arch: x64
+          # Node 24 - ABI 133
+          - node-version: '24.x'
+            abi-tag: 'node24-abi133'
+            os: ubuntu-latest
+            arch: x64
+          - node-version: '24.x'
+            abi-tag: 'node24-abi133'
+            os: macos-latest
+            arch: x64
+          - node-version: '24.x'
+            abi-tag: 'node24-abi133'
+            os: macos-latest
+            arch: arm64
+          - node-version: '24.x'
+            abi-tag: 'node24-abi133'
+            os: windows-latest
+            arch: x64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          architecture: ${{ matrix.arch }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build native module
+        run: npm run build
+
+      - name: Verify ABI version
+        shell: bash
+        run: |
+          echo "Node version: $(node --version)"
+          echo "ABI version: $(node -p process.versions.modules)"
+
+      - name: Find built binary
+        shell: bash
+        run: |
+          echo "Contents of lib directory:"
+          ls -la lib/
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: binaries-${{ matrix.abi-tag }}-${{ matrix.os }}-${{ matrix.arch }}
+          path: lib/node_printer_*.node
+          retention-days: 5
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        abi-tag:
+          - 'node22-abi133'
+          - 'node24-abi133'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts for ${{ matrix.abi-tag }}
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+          pattern: 'binaries-${{ matrix.abi-tag }}-*'
+          merge-multiple: true
+
+      - name: List downloaded artifacts
+        run: |
+          echo "Downloaded artifacts:"
+          find artifacts -type f
+
+      - name: Create or update release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}
+          name: "Release ${{ github.ref_name }}"
+          artifacts: "artifacts/**/node_printer_*.node"
+          allowUpdates: true
+          removeArtifacts: false
